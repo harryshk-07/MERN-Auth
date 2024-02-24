@@ -2,15 +2,16 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { any, z } from "zod";
 import Image from "next/image";
-import image1 from "../public/assets/download.png";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useFormik } from "formik";
-import { useToast } from "@/components/ui/use-toast"
-import { Toaster } from "@/components/ui/toaster";
+import { usernameValidate } from '../helper/validate'
+import { Toaster } from 'react-hot-toast';
+import { useRouter } from "next/router";
+import { useAuthStore } from "@/store/store";
 import {
   Form,
   FormControl,
@@ -36,20 +37,27 @@ const username = () => {
       username: "",
     },
   });
+  
+  const router = useRouter()
+  const setUsername = useAuthStore((state:any) => state.setUsername);
 
   const formik = useFormik({
-    initialValues:{
-        username:''
+    initialValues : {
+      username : ''
     },
-    validateOnBlur:false,
-    validateOnChange:false,
+    validate : usernameValidate,
+    validateOnBlur: false,
+    validateOnChange: false,
     onSubmit : async values => {
-        console.log(values)
+      setUsername(values.username);
+      console.log(values)
+      router.push('/password')
     }
   })
 
   return (
     <div className="container mx-auto">
+    <Toaster position='top-center' reverseOrder={false}></Toaster>
       <div className="flex justify-center items-center h-screen">
         <div className="bg-gray-100 py-8 px-16 rounded-lg shadow-xl">
           <div>
