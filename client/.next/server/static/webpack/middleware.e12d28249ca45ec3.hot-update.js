@@ -1,0 +1,22 @@
+"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+self["webpackHotUpdate_N_E"]("middleware",{
+
+/***/ "(middleware)/./middleware.ts":
+/*!***********************!*\
+  !*** ./middleware.ts ***!
+  \***********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   config: () => (/* binding */ config),\n/* harmony export */   middleware: () => (/* binding */ middleware)\n/* harmony export */ });\n/* harmony import */ var next_dist_server_web_exports_next_response__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! next/dist/server/web/exports/next-response */ \"(middleware)/./node_modules/next/dist/esm/server/web/exports/next-response.js\");\n\nfunction middleware(request) {\n    console.log(\"middleware executed \");\n    const authToken = request.hea;\n    console.log(authToken, \"my token\");\n    const path = request.nextUrl.pathname;\n    const loggedInpathNotAccess = path === \"/username\" || path === \"/register\";\n    if (loggedInpathNotAccess && authToken) {\n        return next_dist_server_web_exports_next_response__WEBPACK_IMPORTED_MODULE_0__[\"default\"].redirect(new URL(\"/profile\", request.url));\n    }\n    if (!loggedInpathNotAccess && !authToken) {\n        return next_dist_server_web_exports_next_response__WEBPACK_IMPORTED_MODULE_0__[\"default\"].redirect(new URL(\"/\", request.url));\n    }\n}\nconst config = {\n    matcher: [\n        \"/login\",\n        \"/profile\"\n    ]\n};\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKG1pZGRsZXdhcmUpLy4vbWlkZGxld2FyZS50cyIsIm1hcHBpbmdzIjoiOzs7Ozs7QUFBMkM7QUFHcEMsU0FBU0MsV0FBV0MsT0FBb0I7SUFDN0NDLFFBQVFDLEdBQUcsQ0FBQztJQUVaLE1BQU1DLFlBQVlILFFBQVFJLEdBQUc7SUFDN0JILFFBQVFDLEdBQUcsQ0FBQ0MsV0FBVztJQUN2QixNQUFNRSxPQUFPTCxRQUFRTSxPQUFPLENBQUNDLFFBQVE7SUFDckMsTUFBTUMsd0JBQXdCSCxTQUFTLGVBQWVBLFNBQVM7SUFFL0QsSUFBSUcseUJBQXlCTCxXQUFXO1FBQ3RDLE9BQU9MLDJGQUFxQixDQUFDLElBQUlZLElBQUksWUFBWVYsUUFBUVcsR0FBRztJQUM5RDtJQUNBLElBQUksQ0FBQ0gseUJBQXlCLENBQUNMLFdBQVc7UUFDeEMsT0FBT0wsMkZBQXFCLENBQUMsSUFBSVksSUFBSSxLQUFLVixRQUFRVyxHQUFHO0lBQ3ZEO0FBQ0Y7QUFFTyxNQUFNQyxTQUFTO0lBQ3BCQyxTQUFTO1FBQUM7UUFBVTtLQUFXO0FBQ2pDLEVBQUUiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9fTl9FLy4vbWlkZGxld2FyZS50cz80MjJkIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IE5leHRSZXNwb25zZSB9IGZyb20gXCJuZXh0L3NlcnZlclwiO1xyXG5pbXBvcnQgeyBOZXh0UmVxdWVzdCB9IGZyb20gXCJuZXh0L3NlcnZlclwiO1xyXG5cclxuZXhwb3J0IGZ1bmN0aW9uIG1pZGRsZXdhcmUocmVxdWVzdDogTmV4dFJlcXVlc3QpIHtcclxuICBjb25zb2xlLmxvZyhcIm1pZGRsZXdhcmUgZXhlY3V0ZWQgXCIpO1xyXG5cclxuICBjb25zdCBhdXRoVG9rZW4gPSByZXF1ZXN0LmhlYVxyXG4gIGNvbnNvbGUubG9nKGF1dGhUb2tlbiwgXCJteSB0b2tlblwiKTtcclxuICBjb25zdCBwYXRoID0gcmVxdWVzdC5uZXh0VXJsLnBhdGhuYW1lO1xyXG4gIGNvbnN0IGxvZ2dlZElucGF0aE5vdEFjY2VzcyA9IHBhdGggPT09IFwiL3VzZXJuYW1lXCIgfHwgcGF0aCA9PT0gXCIvcmVnaXN0ZXJcIjtcclxuXHJcbiAgaWYgKGxvZ2dlZElucGF0aE5vdEFjY2VzcyAmJiBhdXRoVG9rZW4pIHtcclxuICAgIHJldHVybiBOZXh0UmVzcG9uc2UucmVkaXJlY3QobmV3IFVSTChcIi9wcm9maWxlXCIsIHJlcXVlc3QudXJsKSk7XHJcbiAgfVxyXG4gIGlmICghbG9nZ2VkSW5wYXRoTm90QWNjZXNzICYmICFhdXRoVG9rZW4pIHtcclxuICAgIHJldHVybiBOZXh0UmVzcG9uc2UucmVkaXJlY3QobmV3IFVSTChcIi9cIiwgcmVxdWVzdC51cmwpKTtcclxuICB9XHJcbn1cclxuXHJcbmV4cG9ydCBjb25zdCBjb25maWcgPSB7XHJcbiAgbWF0Y2hlcjogW1wiL2xvZ2luXCIsIFwiL3Byb2ZpbGVcIl0sXHJcbn07XHJcblxyXG4iXSwibmFtZXMiOlsiTmV4dFJlc3BvbnNlIiwibWlkZGxld2FyZSIsInJlcXVlc3QiLCJjb25zb2xlIiwibG9nIiwiYXV0aFRva2VuIiwiaGVhIiwicGF0aCIsIm5leHRVcmwiLCJwYXRobmFtZSIsImxvZ2dlZElucGF0aE5vdEFjY2VzcyIsInJlZGlyZWN0IiwiVVJMIiwidXJsIiwiY29uZmlnIiwibWF0Y2hlciJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///(middleware)/./middleware.ts\n");
+
+/***/ })
+
+});

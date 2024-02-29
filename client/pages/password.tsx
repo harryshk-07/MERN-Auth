@@ -3,14 +3,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import Image from "next/image";
-import image1 from "../public/assets/download.png";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useFormik } from "formik";
-import { useToast } from "@/components/ui/use-toast"
-import { Toaster } from "@/components/ui/toaster";
+import toast ,{ Toaster } from "react-hot-toast";
+import { passwordValidate } from "@/helper/validate";
+import useFetch from "@/hooks/fetch.hook";
+import { verifyPassword } from "@/helper/helper";
+import { useRouter } from "next/router";
 import {
   Form,
   FormControl,
@@ -21,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAuthStore } from "@/store/store";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -37,23 +39,44 @@ const password = () => {
     },
   });
 
+  const router = useRouter()
+
+  const {username} = useAuthStore((state:any) => state.auth);
+  const [{isLoading, apiData, serverError }]:any = useFetch(`/user/${username}`)
+
   const formik = useFormik({
     initialValues:{
         password:''
     },
+    validate: passwordValidate,
     validateOnBlur:false,
     validateOnChange:false,
     onSubmit : async values => {
-        console.log(values)
+      let loginPromise = verifyPassword({ username, password : values.password })
+      toast.promise(loginPromise, {
+        loading: 'Checking...',
+        success : <b>Login Successfully...!</b>,
+        error : <b>Password Not Match!</b>
+      });
+
+      loginPromise.then((res:any) => {
+        let { token } = res.data;
+        localStorage.setItem('token', token);
+        router.push('/profile')
+      })
     }
   })
 
+  if(isLoading) return <h1 className='text-2xl font-bold'>isLoading</h1>;
+  if(serverError) return <h1 className='text-xl text-red-500'>{serverError.message}</h1>
+
   return (
     <div className="container mx-auto">
+        <Toaster position='top-center' reverseOrder={false}></Toaster>
       <div className="flex justify-center items-center h-screen">
         <div className="bg-gray-100 py-8 px-16 rounded-lg shadow-xl">
           <div>
-            <h1 className="font-mono font-bold text-3xl text-center">HELLO AGAIN!</h1>
+            <h1 className="font-mono font-bold text-3xl text-center uppercase">hello {apiData?.firstName || apiData?.username}</h1>
             <h3 className="text-center pt-2 pb-4">Explore by connecting with us...</h3>
           </div>
           <div>
@@ -68,7 +91,7 @@ const password = () => {
                   render={({ field }) => (
                     <FormItem>
                       <Avatar className="mx-auto w-40 h-40">
-                        <AvatarImage src="https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg" />
+                        <AvatarImage src={apiData?.profile || "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"} />
                         {/* <AvatarFallback>CN</AvatarFallback> */}
                       </Avatar>
 

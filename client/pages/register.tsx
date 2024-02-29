@@ -3,15 +3,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import Image from "next/image";
-import image1 from "../public/assets/download.png";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useFormik } from "formik";
-import { useToast } from "@/components/ui/use-toast"
-import { Toaster } from "@/components/ui/toaster";
 import convertToBase64 from "@/helper/convert";
+import { useRouter } from "next/router";
+import toast, { Toaster } from 'react-hot-toast';
+import { registerValidation } from '../helper/validate';
+import { registerUser } from '../helper/helper'
 import {
   Form,
   FormControl,
@@ -32,6 +32,8 @@ const formSchema = z.object({
 
 const register = () => {
 
+
+  const router = useRouter()
     const [file, setFile] = useState<any>()
 
 
@@ -49,11 +51,19 @@ const register = () => {
         username:'',
         password:''
     },
-    validateOnBlur:false,
-    validateOnChange:false,
+    validate : registerValidation,
+    validateOnBlur: false,
+    validateOnChange: false,
     onSubmit : async values => {
       values = await Object.assign(values, { profile : file || ''})
-        console.log(values)
+      let registerPromise = registerUser(values)
+      toast.promise(registerPromise, {
+        loading: 'Creating...',
+        success : <b>Register Successfully...!</b>,
+        error : <b>Could not Register.</b>
+      });
+
+      registerPromise.then(function(){ router.push('/username')});
     }
   })
 
@@ -64,6 +74,7 @@ const register = () => {
 
   return (
     <div className="container mx-auto">
+      <Toaster position='top-center' reverseOrder={false}></Toaster>
       <div className="flex justify-center items-center h-screen">
         <div className="bg-gray-100 py-4 px-16 rounded-lg shadow-xl">
           <div>

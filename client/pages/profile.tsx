@@ -3,15 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import Image from "next/image";
-import image1 from "../public/assets/download.png";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useFormik } from "formik";
-import { useToast } from "@/components/ui/use-toast"
-import { Toaster } from "@/components/ui/toaster";
 import convertToBase64 from "@/helper/convert";
+import { profileValidation } from '../helper/validate';
+import toast, { Toaster } from 'react-hot-toast';
+import { updateUser } from '../helper/helper'
 import {
   Form,
   FormControl,
@@ -23,6 +22,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import useFetch from "@/hooks/fetch.hook";
+import { useAuthStore } from "@/store/store";
+import { useRouter } from "next/router";
+import Cookies from 'js-cookie';
+
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -32,7 +36,9 @@ const formSchema = z.object({
 
 const profile = () => {
 
+  const router = useRouter()
     const [file, setFile] = useState<any>()
+    const [{isLoading, apiData, serverError }]:any = useFetch()
 
 
   // 1. Define your form.
@@ -44,18 +50,27 @@ const profile = () => {
   });
 
   const formik = useFormik({
-    initialValues:{
-        firstName:'',
-        lastName:'',
-        email:'',
-        mobile:'',
-        address:''
+    initialValues : {
+      firstName : apiData?.firstName || '',
+      lastName: apiData?.lastName || '',
+      email: apiData?.email || '',
+      mobile: apiData?.mobile || '',
+      address : apiData?.address || ''
     },
-    validateOnBlur:false,
-    validateOnChange:false,
+    enableReinitialize: true,
+    validate : profileValidation,
+    validateOnBlur: false,
+    validateOnChange: false,
     onSubmit : async values => {
-      values = await Object.assign(values, { profile : file || ''})
-        console.log(values)
+      values = await Object.assign(values, { profile : file || apiData?.profile || ''})
+      let updatePromise = updateUser(values);
+
+      toast.promise(updatePromise, {
+        loading: 'Updating...',
+        success : <b>Update Successfully...!</b>,
+        error: <b>Could not Update!</b>
+      });
+
     }
   })
 
@@ -64,8 +79,19 @@ const profile = () => {
     setFile(base64);
   }
 
+  // logout handler function
+  function userLogout(){
+    localStorage.removeItem('token');
+    Cookies.remove('token');
+    router.push("/username")
+  }
+
+  if(isLoading) return <h1 className='text-2xl font-bold'>isLoading</h1>;
+  if(serverError) return <h1 className='text-xl text-red-500'>{serverError.message}</h1>
+
   return (
     <div className="container mx-auto">
+      <Toaster position='top-center' reverseOrder={false}></Toaster>
       <div className="flex justify-center items-center h-screen">
         <div className="bg-gray-100 py-4 px-16 rounded-lg shadow-xl">
           <div>
@@ -85,7 +111,7 @@ const profile = () => {
                     <FormItem>
                         <label htmlFor="profile">
                       <Avatar className="mx-auto w-16 h-16">
-                        <AvatarImage src={file || "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"} />
+                        <AvatarImage src={apiData?.profile || file || "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"} />
                       </Avatar>
                         </label>
                       <FormControl>
@@ -122,7 +148,7 @@ const profile = () => {
                   )}
                 />
                 <Button className="w-full" type="submit">Update</Button>
-                <h3 className="text-center text-base">Come back later? <Link href="/login" className="text-red-500 font-bold">Logout</Link></h3>
+                <h3 className="text-center text-base">Come back later? <Button onClick={userLogout} className="text-red-500 bg-transparent font-bold hover:outline-black hover:outline-dotted hover:bg-transparent">Logout</Button></h3>
               </form>
             </Form>
           </div>
